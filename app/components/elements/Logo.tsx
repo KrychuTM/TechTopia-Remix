@@ -1,10 +1,13 @@
-function Logo(props: {extra: string}) {
+function Logo(props: { extra: string }) {
   return (
-    <span className={`flex font-semibold capitalize pointer-events-none font-bebas ${props.extra}`}>
-      <p>Tech</p>
-      <p className="text-indigo-600">Topia</p>
-      <p >.</p>
-    </span>
+    <div
+      className={`flex font-semibold capitalize pointer-events-none font-bebas ${props.extra}`}
+    >
+      <p>
+        Tech
+        <span className='text-indigo-600'>Topia</span>
+      .</p>
+    </div>
   );
 }
 
