@@ -12,7 +12,7 @@ const ProductCard = () => {
           className='max-w-full max-h-full'
         />
       </div>
-      <div title='details-container' className='mb-10'>
+      <div title='details-container' className=''>
         <span
           title='product-seller'
           className='relative font-sans text-sm font-semibold text-indigo-600'

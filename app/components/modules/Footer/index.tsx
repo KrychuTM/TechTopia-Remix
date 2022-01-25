@@ -1,6 +1,6 @@
 const FooterComponent = () => {
   return (
-    <footer className="w-full bg-indigo-600 h-1/4">
+    <footer className="w-full bg-indigo-600">
       <p>heya</p>
     </footer>
   );

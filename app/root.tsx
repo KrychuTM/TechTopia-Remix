@@ -1,7 +1,6 @@
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from 'remix';
 import type { MetaFunction } from 'remix';
 import styles from './tailwind.css';
-import FooterComponent from './components/modules/Footer';
 
 type DocumentProps = {
   children: React.ReactNode[] | React.ReactNode;
@@ -20,7 +19,6 @@ export default function App() {
   return (
     <Document>
       <Outlet />
-      {/* <FooterComponent /> */}
     </Document>
   );
 }
