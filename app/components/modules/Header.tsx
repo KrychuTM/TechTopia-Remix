@@ -29,7 +29,7 @@ function Header() {
           </div>
         </div>
       </div>
-      <div className='flex-row mt-[76px] py-1 text-lg space-x-8 text-[#292A2F] lg:flex font-pt'>
+      <div className='flex mt-[76px] py-1 text-lg space-x-8 text-[#292A2F] lg:flex font-pt'>
         <p className='cursor-default link-underline'>All Products</p>
         <p className='cursor-default link-underline'>New</p>
         <p className='cursor-default link-underline'>Sales</p>
