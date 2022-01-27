@@ -1,0 +1,183 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  firstName    String    @map("first_name")
+  lastName     String?   @map("last_name")
+  imageUrl     String?   @map("image_url")
+  email        String    @unique
+  emailVerfied DateTime? @map("email_verified")
+  createdAt    DateTime  @map("created_at")
+  modifiedAt   DateTime  @map("modified_at")
+  profile      Profile?
+  address      Address?
+  payment      Payment?
+  cart         Cart?
+
+  @@map("user")
+}
+
+model Profile {
+  id         String   @id @default(cuid())
+  userId     String   @unique @map("user_id")
+  bio        String?
+  createdAt  DateTime @map("created_at")
+  modifiedAt DateTime @map("modified_at")
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profile")
+}
+
+model Address {
+  id           String  @id @default(cuid())
+  userId       String  @unique @map("user_id")
+  city         String
+  country      String
+  telephone    Int?
+  mobile       Int?
+  postalCode   String  @map("postal_code")
+  addressLine1 String  @map("address_line1")
+  addressLine2 String? @map("address_line2")
+  User         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_address")
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  userId        String   @unique @map("user_id")
+  paymentType   String   @map("payment_type")
+  provider      String
+  accountNumber Int      @map("account_no")
+  expiryDate    DateTime @db.Date
+  User          User     @relation(fields: [userId], references: [id], onDelete: NoAction)
+
+  @@map("user_payment")
+}
+
+model Product {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal    @db.Decimal(13, 2)
+  imageUrl    String     @map("image_url")
+  seller      String?
+  SKU         String?
+  category    String
+  inventoryId String     @unique @map("inventory_id")
+  discountId  String?    @unique @map("discount_id")
+  createdAt   DateTime   @map("created_at")
+  modifiedAt  DateTime   @map("modified_at")
+  categories  Category   @relation(fields: [category], references: [name])
+  inventory   Inventory  @relation(fields: [inventoryId], references: [id], onDelete: NoAction)
+  discount    Discount?  @relation(fields: [discountId], references: [id], onDelete: NoAction)
+  orderItem   OrderItem?
+
+  @@map("product")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  createdAt   DateTime  @map("created_at")
+  modifiedAt  DateTime  @map("modified_at")
+  products    Product[]
+
+  @@map("product_category")
+}
+
+model Inventory {
+  id         String    @id @default(cuid())
+  quantity   Int       @default(0)
+  createdAt  DateTime  @map("created_at")
+  modifiedAt DateTime  @map("modified_at")
+  products   Product[]
+
+  @@map("product_inventory")
+}
+
+model Discount {
+  id              String    @id @default(cuid())
+  name            String
+  description     String
+  discountPercent Decimal   @map("discount_percent")
+  active          Boolean
+  createdAt       DateTime  @map("created_at")
+  modifiedAt      DateTime  @map("modified_at")
+  products        Product[]
+
+  @@map("product_discount")
+}
+
+model Cart {
+  id         String     @id @default(uuid())
+  userId     String     @unique @map("user_id")
+  subtotal   Decimal    @db.Money
+  createdAt  DateTime   @map("created_at")
+  modifiedAt DateTime   @map("modified_at")
+  items      CartItem[]
+  User       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("cart_session")
+}
+
+model CartItem {
+  id         String   @id @default(cuid())
+  cartId     String   @unique @map("cart_id")
+  productId  String   @unique @map("product_id")
+  quantity   Int
+  createdAt  DateTime @map("created_at")
+  modifiedAt DateTime @map("modified_at")
+  Cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@map("cart_item")
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  userId     String      @unique @map("user_id")
+  total      Decimal     @db.Money
+  paymentId  String      @unique @map("payment_id")
+  quantity   Int
+  createdAt  DateTime    @map("created_at")
+  modifiedAt DateTime    @map("modified_at")
+  items      OrderItem[]
+
+  @@map("order_details")
+}
+
+model OrderItem {
+  id         String  @id @default(cuid())
+  orderId    String  @unique @map("order_id")
+  productId  String  @unique @map("product_id")
+  quantity   Int
+  createdAt  String  @map("created_at")
+  modifiedAt String  @map("modified_at")
+  Order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  Product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("order_item")
+}
+
+model PaymentDetails {
+  id         String   @id @default(cuid())
+  orderId    String   @unique @map("order_id")
+  balance    Decimal  @db.Money
+  provider   String
+  status     String
+  createdAt  DateTime @map("created_at")
+  modifiedAt DateTime @map("modified_at")
+
+  @@map("payment_details")
+}
